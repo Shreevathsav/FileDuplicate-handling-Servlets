@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forget Password</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <style>
+        body{
+    min-width: 100vh;
+}
+input{
+    margin: 10px;
+    height: 30px;
+    width: 200px;
+    font-size: 1.5rem;
+}
+
+        .invisible{
+            display: none;
+        }
+        #Div{
+            margin-top: 15px;
+        }
+        #pass{
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand"><i class="fa fa-folder"></i> Find Duplicates</a>
+          <div class="d-flex">
+            <a href="adminauth.html" class="btn btn-outline-light" type="submit">Admin Login</a>
+            
+          </div>
+        </div>
+      </nav>
+      <br>
+      <br>
+      <br>
+      <div class="container">
+        Enter UserName: <input id="uname" type="text">
+    <button class="btn btn-outline-dark" onclick="searchUName()">Search</button>
+      </div>
+    
+
+    <div id="Div" class="invisible container">
+        <label for="ques">Question</label>
+        <p id="ques"></p>
+        <label for="ans">Answer</label>
+        <input id="ans" type="text">
+        <button class="btn btn-outline-dark" onclick="changePass()">Verify</button>
+    </div>
+    <div  id="pass" class="invisible container">
+        <label for="password">New Password</label>
+        <input id="password" type="password">
+        <label for="conPass">Confirm Password</label>
+        <input id="conPass" type="password">
+        <button class="btn btn-outline-dark" onclick="updatePass()">Chnage Password</button>
+    </div>
+<script>
+    let passwrd = document.getElementById("password");
+    let conPassWrd = document.getElementById("conPass");
+    let div=document.getElementById("Div");
+    let uname = document.getElementById("uname");
+    let p = document.getElementById("ques");
+    let i = document.getElementById("ans");
+    let answer=null;
+    let divpass = document.getElementById("pass");
+    let ans = document.getElementById("id");
+    async function searchUName(){
+        
+
+        let url='http://localhost:8080/demo/forgetPass?uname='+uname.value;
+        fetch(url)  
+        .then(response => response.json())
+        .then(data => openDiv(data))
+    }
+    async function openDiv(data){
+        var res = await data;
+        console.log(res);
+        if(res.status=="200"){
+            alert('UserName found');
+            div.classList.remove("invisible");
+            p.innerHTML=res.question;
+            answer=res.answer;
+        }
+        else{
+            alert('UserName not found');
+        }
+    }
+    async function changePass(){
+        if(answer==i.value){
+            alert("You can now update the password!");
+            divpass.classList.remove("invisible");
+        }
+        else{
+            alert("Wrong answer for security question");
+        }
+    }
+    async function updatePass(){
+        if(passwrd.value==conPassWrd.value){
+        let url='http://localhost:8080/demo/UpdatePass?uname='+uname.value+'&pass='+passwrd.value;
+        fetch(url)  
+        .then(response => response.json())
+        .then(data1 => up(data1))
+        }
+        else{
+            alert("Password mismatch");
+        }
+    }
+
+    async function up(data1){
+        let res = await data1;
+        if(res.status=="200"){
+            alert("Password changed sucessfully");
+            window.location.replace("http://localhost:8080/demo/");
+        }
+        else{
+            alert("Password updation failed");
+        }
+    }
+
+</script>
+</body>
+</html>

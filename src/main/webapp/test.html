@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="testing()">click</button>
+    <script>
+        function testing(){
+            console.log("inside");
+            let url = "http://localhost:8080/demo/TAXII";
+            fetch(url,{
+                method:'GET',
+                headers: {
+                    'User-Agent' : 'java-taxii.httpclient',
+            'Content-Type': 'application/xml',
+            'accept': 'application/xml',
+            'x-taxii-accept': 'urn:taxii.mitre.org:message:xml:1.1',
+            'x-taxii-content-type': 'urn:taxii.mitre.org:message:xml:1.1',
+            'x-taxii-services': 'urn:taxii.mitre.org:services:1.1',
+            'x-taxii-protocol': 'urn:taxii.mitre.org:protocol:http:1.0'
+                     },
+            })
+              }
+    </script>
+</body>
+</html>

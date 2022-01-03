@@ -1,0 +1,453 @@
+<html>
+<head>
+    <title>Directory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+  body{
+    min-width: 100vh;
+}
+
+center form input{
+  height: 40px;
+    font-size: 2rem;
+}
+center{
+    justify-content: center;
+    align-items: center;
+}
+center input
+{
+    height: 40px;
+    width: 700px;
+    font-size: 2rem;
+    
+}
+
+ul{
+    width: 500px;;
+}
+ul li i{
+    display:inline-flex;
+}
+
+
+ul li{
+    width: max-content;
+    height: 20px;
+    list-style: none !important;
+    /* display: inline !important; */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    margin: 5px 0;
+    line-height: 20px;
+    background: whitesmoke;
+}
+ul li span{
+    background-color: red;
+    color: aliceblue;
+    padding: 10px;
+}
+
+
+table{
+    margin-top: 10px;
+    font-family: arial,sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+
+th{
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* td
+{
+ max-width: 100px;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+} */
+.invisible{
+  display: none;
+}
+  
+</style>
+<body>
+    
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="container-fluid">
+          <a class="navbar-brand"><i class="fa fa-folder"></i> Find Duplicates</a>
+        <div class="d-flex ml-auto">
+          <form action="Logout" method="post">
+            <button class="btn btn-outline-light" type="submit">Logout</button>
+          </form>
+        </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <br>
+  <br>
+  <br>
+
+    <center>
+        <input id ="path" type="text" name="path" class="path">
+        <button class="btn btn-outline-dark" id="submitBtn" class="icon-btn" type="submit">
+                <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="btn btn-outline-dark" onclick="getLogs()" class="" type="submit">
+            <i class="fas fa-file-archive" ></i>
+        </button>
+        </center>
+        <div id="clear-all-logs" class="invisible container">
+          <button class="btn btn-outline-dark" onclick="del1()" class="" type="submit">
+            <i class="fas fa-trash" ></i> Clear Logs
+        </button>
+        </div>
+        <center>
+          <div id="log" class="invisible container">
+           
+
+          </div>
+        <div id="table" class="container">
+
+        </div>
+    </center>
+
+    <script type="text/javascript">
+        let urlpath = document.getElementById("path");
+let div = document.getElementById("table");
+var li;
+arr = []
+path = []
+let flag=0;
+let clear_all_logs=document.getElementById("clear-all-logs");
+let log=document.getElementById("log");
+async function del1(){
+  let url='http://localhost:8080/demo/auth/clearlogs'; 
+  console.log(url);
+  fetch(url)  
+    .then(response => response.json())
+    .then(d=>delConf(d))
+}
+
+
+async function delConf(d){
+  let res = await d;
+      if(res.status==200){
+      alert('Logs cleared');
+      flag=0;
+      clear_all_logs.classList.add("invisible");
+      log.classList.add("invisible");
+      }
+    }
+
+
+async function getLogs(){
+
+  if(flag==0){
+    flag=1;
+  let url='http://localhost:8080/demo/auth/GetLogs'; 
+  console.log(url);
+  fetch(url)  
+    .then(response => response.json())
+    .then(d=>logs(d))
+  }
+  else{
+    flag=0;
+    clear_all_logs.classList.add("invisible");
+    log.classList.add("invisible");
+  }
+}
+
+async function logs(d){
+  let res = await d;
+      console.log(res);
+      var dupTable = document.createElement('table');
+        dupTable.setAttribute('id', 'logTable');  
+        heading = [
+          "Searches",
+          "Time",
+          "Date",
+          "Delete"
+        ];
+        var tr = dupTable.insertRow(-1);
+        for(let i=0;i<4;i++){
+        var th = document.createElement('th');  
+        th.innerHTML = heading[i];
+        tr.appendChild(th);
+        }
+        var div = document.getElementById('log');
+        var rowCnt = dupTable.rows.length;    
+        var tr = dupTable.insertRow(rowCnt);
+        var tbody = document.createElement('tbody');
+        if(res.length==0)
+        {
+          var row = document.createElement("tr");
+            var cell = document.createElement("td");
+              h4 = document.createElement("h4");
+              h4.innerText="No Logs";
+              cell.appendChild(h4);
+              row.appendChild(cell);
+            var cell1 = document.createElement("td");
+            h4 = document.createElement('h4');
+            h4.innerText = "-";
+            cell1.appendChild(h4);
+            row.appendChild(cell1);
+            tbody.appendChild(row);
+        }
+        else{
+          for (var i = 0; i < res.length; i++) {
+            const rowId = i.toString();
+            const id=res[i].id.toString();
+            var row = document.createElement("tr");
+            row.setAttribute("id",i.toString());
+            var cell = document.createElement("td");
+              h4 = document.createElement("h4");
+              h4.innerHTML=res[i].serches;
+              cell.appendChild(h4);
+              row.appendChild(cell);
+            var cell1 = document.createElement("td");
+            h4 = document.createElement('h4');
+            h4.innerText = res[i].time;
+            cell1.appendChild(h4);
+            row.appendChild(cell1);
+            var cell3 = document.createElement("td");
+              h = document.createElement("h4");
+              h.innerHTML=res[i].date;
+              cell3.appendChild(h);
+              row.appendChild(cell3)
+              var cell4 = document.createElement("td");
+              btn = document.createElement("button");
+              btn.classList.add("btn")
+              btn.classList.add("btn-danger")
+              btn.innerText="Delete";
+              btn.onclick=function dele(){
+                // await console.log(parseInt(res[i].id.toString()));
+              del(id,rowId);
+              }
+              cell4.appendChild(btn);
+              row.appendChild(cell4)
+            tbody.appendChild(row);
+            tbody.setAttribute("id","lobTableBody");
+          }
+        }
+      dupTable.appendChild(tbody);
+      dupTable.classList.add("table");
+      dupTable.classList.add("table-striped");
+      dupTable.classList.add("table-hover");
+      log.innerHTML=" ";
+        log.appendChild(dupTable);   
+        log.classList.remove("invisible");  
+
+}
+
+async function del(id,rowId){
+  
+  let url='http://localhost:8080/demo/auth/adminDelete?option=search&id='+id; 
+  console.log(url);
+  fetch(url)  
+    .then(response => response.json())
+    .then(d=>confirmDelete(d,rowId))
+}
+
+async function confirmDelete(d,rowId){
+  let tbody = document.getElementById("lobTableBody");
+  let res = await d;
+       if(res.status=="200"){
+           alert('Search log deleted');
+           flag=1;
+      console.log(rowId);
+      var row = document.getElementById(rowId);
+    row.parentNode.removeChild(row);
+         }
+}
+
+let btnSubmit = document.getElementById("submitBtn");
+btnSubmit.addEventListener('click',getResults); 
+
+
+function getResults(){
+  if(flag==0){
+    flag=1;
+    log.classList.add("invisible");
+  }
+  log.classList.add("invisible");
+  console.log("inside");
+  
+  let str = urlpath.value;
+  let res = str.replace(/\\/g, "/");
+
+
+  let xhr = new XMLHttpRequest();
+  let url='http://localhost:8080/demo/auth/serachduplicates?path='+res; 
+  console.log(url);
+
+  xhr.open('GET',url,true);
+
+  xhr.onload=function(){
+    console.log("inside onload");
+    if(this.status == 200){
+      console.log(this.response);
+      let jsondata = JSON.parse(this.response);
+      array=[]
+      sizeArray=[]
+      for(let t = 0;t<jsondata.duplicates.length;t++){
+        array.push(jsondata.duplicates[t]);
+      }
+      for(let t=0;t<jsondata.size.length;t++){
+        sizeArray.push(jsondata.size[t]);
+      }
+      
+      console.log(array);
+      var dupTable = document.createElement('table');
+        dupTable.setAttribute('id', 'dubTable');  
+        heading = [
+          "Duplicates",
+          "Size"
+        ];
+        var tr = dupTable.insertRow(-1);
+        for(let i=0;i<2;i++){
+        var th = document.createElement('th');  
+        th.innerHTML = heading[i];
+        tr.appendChild(th);
+        }
+        var div = document.getElementById('table');
+        var rowCnt = dupTable.rows.length;    
+        var tr = dupTable.insertRow(rowCnt);
+        var tbody = document.createElement('tbody');
+        if(array.length==0)
+        {
+          var row = document.createElement("tr");
+            var cell = document.createElement("td");
+              h4 = document.createElement("h4");
+              h4.innerText="No Duplicates";
+              cell.appendChild(h4);
+              row.appendChild(cell);
+            var cell1 = document.createElement("td");
+            h4 = document.createElement('h4');
+            h4.innerText = "-";
+            cell1.appendChild(h4);
+            row.appendChild(cell1);
+            tbody.appendChild(row);
+        }
+        else{
+          for (var i = 0; i < array.length; i++) {
+            var row = document.createElement("tr");
+            const r = "tr"+i;
+            row.setAttribute("id",r);
+
+            var td = document.createElement("td");
+            const c = "td"+i;
+            td.setAttribute("id",c);
+           
+            var row1 = document.createElement("tr");
+            let a=0;
+            array[i].forEach(ele =>{
+              const rowId1 = a.toString()+i.toString();
+              var row1 = document.createElement("tr");
+              row1.setAttribute("id",a.toString()+i.toString());
+              var cell1 = document.createElement("td");
+              btn= document.createElement("button");
+              btn.classList.add("btn");
+              btn.classList.add("btn-danger");
+              btn.innerText="X";
+              btn.onclick=function deleteFile(){
+                dele(ele,rowId1,c,r);
+              }
+              cell1.appendChild(btn);
+              row1.appendChild(cell1);
+            var cell = document.createElement("td");
+              h4 = document.createElement("h4");
+              h4.innerText=ele;
+              cell.appendChild(h4);
+              row1.appendChild(cell);
+              
+              td.appendChild(row1);
+              a=a+1;
+            });
+            row.appendChild(td);
+            var cell1 = document.createElement("td");
+            h4 = document.createElement('h4');
+            h4.innerText = sizeArray[i];
+            cell1.appendChild(h4);
+            row.appendChild(cell1);
+            tbody.appendChild(row);
+          }
+        }
+      dupTable.appendChild(tbody);
+      dupTable.classList.add("table");
+      dupTable.classList.add("table-striped");
+      dupTable.classList.add("table-hover");
+      if(div.contains){
+      while(div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+      }
+        div.appendChild(dupTable);
+        
+    }
+  }
+  xhr.send();
+
+}
+
+
+function dele(pa,rowId1,c,r){
+  let res = pa.replace(/\\/g, "/");
+  let url='http://localhost:8080/demo/auth/duplicatedelete?delete='+res; 
+  console.log(url);
+  fetch(url)  
+    .then(response => response.json())
+    .then(data => delfile(data,pa,rowId1,c,r))
+  }
+
+
+  async function delfile(data,urlpath,rowId1,c,r){
+    console.log(c);
+    console.log(r);
+    var res = await data;
+    console.log(res.status);
+    if(res.status==200){
+      alert('The file '+urlpath+' has been deleted');
+      console.log(rowId1);
+      let td = document.getElementById(c);
+      console.log(td.childNodes.length);
+      var row = document.getElementById(rowId1);
+    row.parentNode.removeChild(row);
+      if(td.childNodes.length==1){
+        console.log(c);
+        let row  = document.getElementById(r);
+        row.parentNode.removeChild(row);
+      }
+     
+
+    }
+    else{
+      alert('The file '+urlpath+' has not been deleted');
+    }
+
+  }
+async function logout(){
+    let url='http://localhost:8080/demo/auth/logout';
+    fetch(url)  
+    .then(response => response.json())
+    .then(data)
+}
+
+    </script>
+</body>
+</html>
